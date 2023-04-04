@@ -42,15 +42,15 @@ classifiers = [
 ]
 
 install_requires = [
-    'boto3>=1.21.45,<2',
+    # 'boto3>=1.21.45,<2',
     'Brotli>=1.0.9',
-    'matplotlib>=3.0.0,<4',
+    # 'matplotlib>=3.0.0,<4',
     'paramiko>=2.11.0,<4',
     'python-snappy>=0.6.1,<1',
-    'torch>=1.10,<2',
-    'torchtext>=0.10',
-    'torchvision>=0.10',
-    'tqdm>=4.64.0,<5',
+    # 'torch>=1.10,<2',
+    # 'torchtext>=0.10',
+    # 'torchvision>=0.10',
+    # 'tqdm>=4.64.0,<5',
     'transformers>=4.21.3,<5',
     'xxhash>=3.0.0,<4',
     'zstd>=1.5.2.5,<2',

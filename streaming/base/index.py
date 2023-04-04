@@ -7,7 +7,7 @@ from math import ceil
 from typing import Tuple
 
 import numpy as np
-from numpy.typing import NDArray
+# from numpy.typing import NDArray
 
 from streaming.base import distributed as dist
 
@@ -29,10 +29,10 @@ class Index(object):
     Maps global sample IDs to their shards and offsets.
 
     Args:
-        samples_per_shard (NDArray[np.int64]): Size of each shard, in samples.
+        samples_per_shard (Any): Size of each shard, in samples.
     """
 
-    def __init__(self, samples_per_shard: NDArray[np.int64]) -> None:
+    def __init__(self, samples_per_shard: Any) -> None:
         self.samples_per_shard = samples_per_shard
 
         self.total_samples = sum(samples_per_shard)

@@ -9,7 +9,7 @@ This algorithm is roughly half as fast as algorithm ``py1s``, but ever so slight
 from typing import List
 
 import numpy as np
-from numpy.typing import NDArray
+# from numpy.typing import NDArray
 
 
 class _Shard(object):
@@ -17,19 +17,19 @@ class _Shard(object):
 
     Args:
         index (int): Shard ID.
-        smaples (NDArray[np.int64]): Sample IDs
+        smaples (Any): Sample IDs
     """
 
-    def __init__(self, index: int, samples: NDArray[np.int64]) -> None:
+    def __init__(self, index: int, samples: Any) -> None:
         self.index = index
         self.samples = samples
 
 
-def _create_shards(sizes: NDArray[np.int64]) -> List[_Shard]:
+def _create_shards(sizes: Any) -> List[_Shard]:
     """Get the sample ID range for each shard.
 
     Args:
-        sizes (NDArray[np.int64]): Number of samples for each shard.
+        sizes (Any): Number of samples for each shard.
 
     Returns:
         List[_Shard]: List of shard objects.
@@ -43,14 +43,14 @@ def _create_shards(sizes: NDArray[np.int64]) -> List[_Shard]:
     return shards
 
 
-def _shards_to_samples(shards: List[_Shard]) -> NDArray[np.int64]:
+def _shards_to_samples(shards: List[_Shard]) -> Any:
     """Collect the sample IDs of the given shards into a single array.
 
     Args:
         shards (List[_Shard]): The given shards.
 
     Returns:
-        NDArray[np.int64]: Their sample IDs.
+        Any: Their sample IDs.
     """
     for shard in shards:
         if len(shard.samples):
@@ -104,22 +104,22 @@ def _partition(shards: List[_Shard], num_parts: int) -> List[List[_Shard]]:
     return lists
 
 
-def get_shuffle_py2s(shard_sizes: NDArray[np.int64], num_canonical_nodes: int, seed: int,
-                     epoch: int) -> NDArray[np.int64]:
+def get_shuffle_py2s(shard_sizes: Any, num_canonical_nodes: int, seed: int,
+                     epoch: int) -> Any:
     """Get the shuffled global ordering of samples for an epoch.
 
     The assignment of shards to nodes is fixed across epochs, but each grouping of shards is
     processed concurrently in a different order by each node's workers each epoch.
 
     Args:
-        shard_sizes (NDArray[np.int64]): Number of samples contained in each shard, in order.
+        shard_sizes (Any): Number of samples contained in each shard, in order.
         num_canonical_nodes (int): Number of canonical nodes.
         seed (int): Base random seed, which is held constant over an entire training run.
         epoch (int): Current epoch, which is added to the seed to get a different deterministic
             shuffle each epoch.
 
     Returns:
-        NDArray[np.int64]: 1:1 mapping of sample ID to shuffled sample ID.
+        Any: 1:1 mapping of sample ID to shuffled sample ID.
     """
     # Initiailze the sample ID range for each shard.
     shards = _create_shards(shard_sizes)

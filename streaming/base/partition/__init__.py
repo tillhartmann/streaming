@@ -6,7 +6,7 @@
 from typing import Optional
 
 import numpy as np
-from numpy.typing import NDArray
+# from numpy.typing import NDArray
 
 from streaming.base.partition.orig import get_partitions_orig
 
@@ -22,7 +22,7 @@ def get_partitions(algo: str,
                    ranks_per_node: int,
                    workers_per_rank: int,
                    batch_size: Optional[int] = None,
-                   drop_first: int = 0) -> NDArray[np.int64]:
+                   drop_first: int = 0) -> Any:
     """Partition the given number of samples to nodes, ranks, and workers.
 
     Either canonical or physical nodes must be evenly divisible by the other.
@@ -43,7 +43,7 @@ def get_partitions(algo: str,
         drop_first (int): Number of samples seen already, which are dropped. Defaults to ``0``.
 
     Returns:
-        NDArray[np.int64]: Partitions of shape (physical nodes, ranks per node, workers per rank,
+        Any: Partitions of shape (physical nodes, ranks per node, workers per rank,
             batches per worker, batch size).
     """
     get = algos[algo]

@@ -14,7 +14,7 @@ import numpy as np
 import torch
 import torch.distributed as dist
 from filelock import FileLock
-from numpy.typing import NDArray
+# # from numpy.typing import NDArray
 from torch.utils.data import IterableDataset
 
 from streaming.base.distributed import barrier
@@ -51,10 +51,10 @@ class _PartitionState:
       downloads in progress).
 
     Args:
-        sample_ids (NDArray[np.int64]): This worker's partition of the sample space.
+        sample_ids (Any): This worker's partition of the sample space.
     """
 
-    def __init__(self, sample_ids: NDArray[np.int64]) -> None:
+    def __init__(self, sample_ids: Any) -> None:
         self.sample_ids = sample_ids
         self.total = len(sample_ids)
         self.yield_index = 0
@@ -473,14 +473,14 @@ class StreamingDataset(IterableDataset):
 
         return epoch, sample_in_epoch
 
-    def _resample_streams(self, epoch: int) -> Tuple[NDArray[np.int64], NDArray[np.int64]]:
+    def _resample_streams(self, epoch: int) -> Tuple[Any, Any]:
         """Perform the up/down-sampling needed to generate the weighted epoch.
 
         Args:
             epoch (int): What epoch this is for. Used in seeding the sampling RNG.
 
         Returns:
-            Tuple[NDArray[np.int64], NDArray[np.int64]]: Sampled shard sizes and sample mapping.
+            Tuple[Any, Any]: Sampled shard sizes and sample mapping.
         """
         # Initialize random number generator and arrays.
         rng = np.random.default_rng(self.shuffle_seed + epoch)
@@ -523,7 +523,7 @@ class StreamingDataset(IterableDataset):
         return pick_per_shard, small_per_big
 
     def _generate_sample_ids(self, world: World, epoch: int,
-                             sample_in_epoch: int) -> NDArray[np.int64]:
+                             sample_in_epoch: int) -> Any:
         """Generate this epoch's arrangement of samples.
 
         This is only called in local rank zero.
@@ -534,7 +534,7 @@ class StreamingDataset(IterableDataset):
             sample_in_epoch (int): Where we are in the epoch.
 
         Returns:
-            NDArray[np.int64]: The epoch (num physical nodes, ranks per node, workers per rank,
+            Any: The epoch (num physical nodes, ranks per node, workers per rank,
                 batches per worker, batch size).
         """
         # Ensure that num_canonical_nodes has been set.
@@ -563,12 +563,12 @@ class StreamingDataset(IterableDataset):
         # need them anymore, and can convert back to underlying "small" sample IDs.
         return np.where(big_ids != -1, small_per_big[big_ids], -1)
 
-    def _share_sample_ids(self, sample_ids: NDArray[np.int64]) -> \
+    def _share_sample_ids(self, sample_ids: Any) -> \
             Tuple[CreateSharedMemory, CreateSharedMemory]:
         """Put an epoch's sample ordering into shared memory.
 
         Args:
-            sample_ids (NDArray[np.int64]): Sample IDs.
+            sample_ids (Any): Sample IDs.
         """
         ndim = 5
 
@@ -594,11 +594,11 @@ class StreamingDataset(IterableDataset):
         return shape_shm_obj, data_shm_obj
 
     def _attach_sample_ids(
-            self) -> Tuple[NDArray[np.int64], CreateSharedMemory, CreateSharedMemory]:
+            self) -> Tuple[Any, CreateSharedMemory, CreateSharedMemory]:
         """Get an epoch's sample ordering from shared memory.
 
         Returns:
-            NDArray[np.int64]: Sample IDs.
+            Any: Sample IDs.
         """
         ndim = 5
 
@@ -618,7 +618,7 @@ class StreamingDataset(IterableDataset):
 
         return sample_ids, shape_shm_obj, data_shm_obj
 
-    def _get_work(self, world: World, epoch: int, sample_in_epoch: int) -> NDArray[np.int64]:
+    def _get_work(self, world: World, epoch: int, sample_in_epoch: int) -> Any:
         """Get this worker's partition of this epoch's sample space.
 
         Args:
@@ -627,7 +627,7 @@ class StreamingDataset(IterableDataset):
             sample_in_epoch (int): Where we are in the epoch.
 
         Returns:
-            Optional[NDArray[np.int64]]: Our partition of the epoch.
+            Optional[Any]: Our partition of the epoch.
         """
         # Do expensive work that may use a lot of cores/memory just once, in the local leader.
         if world.is_local_leader:
@@ -651,13 +651,13 @@ class StreamingDataset(IterableDataset):
 
         return worker_sample_ids
 
-    def _download_or_skip_shard(self, lock: FileLock, shard_states: NDArray[np.uint8],
+    def _download_or_skip_shard(self, lock: FileLock, shard_states: Any,
                                 shard_id: int, wait_if_downloading: bool) -> None:
         """Download a shard, waiting or skipping if in progress by another worker.
 
         Args:
             lock (FileLock): The lock protecting ``shard_states``.
-            shard_states (NDArray[np.uint8]): The download status of each shard, as an array in
+            shard_states (Any): The download status of each shard, as an array in
                 shared memory.
             shard_id (int): Shard ID.
             wait_if_downloading (bool): Whether to wait or skip if the shard is currently being
@@ -692,11 +692,11 @@ class StreamingDataset(IterableDataset):
         else:
             raise RuntimeError('Unknown shard state')
 
-    def _get_shard_states(self) -> Tuple[FileLock, NDArray[np.uint8]]:
+    def _get_shard_states(self) -> Tuple[FileLock, Any]:
         """Get the shared shard states array and its protecting lock.
 
         Returns:
-            Tuple[FileLock, NDArray[np.uint8]]: Lock, and array.
+            Tuple[FileLock, Any]: Lock, and array.
         """
         # Get the filelock that protects shard_states shared memory array.
         lock = FileLock(self.shard_states_filename)
@@ -823,11 +823,11 @@ class StreamingDataset(IterableDataset):
                 sleep(TICK)
             state.ready_index += 1
 
-    def _each_sample(self, sample_ids: NDArray[np.int64]) -> Iterator[int]:
+    def _each_sample(self, sample_ids: Any) -> Iterator[int]:
         """Iterate over each sample ID, while downloading ahead in the background.
 
         Args:
-            sample_ids (NDArray[np.int64]): The sample IDs to download and iterate.
+            sample_ids (Any): The sample IDs to download and iterate.
 
         Returns:
             Iterator[int]: Each sample ID, having been downloaded.

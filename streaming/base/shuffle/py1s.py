@@ -13,7 +13,7 @@ convergence, while making us faster.
 from typing import List, Tuple
 
 import numpy as np
-from numpy.typing import NDArray
+# from numpy.typing import NDArray
 
 
 def _divide_spans(spans: List[Tuple[int, int]], num_samples: int, num_parts: int) -> \
@@ -66,22 +66,22 @@ def _divide_spans(spans: List[Tuple[int, int]], num_samples: int, num_parts: int
     return out_spans, super_spans
 
 
-def get_shuffle_py1s(shard_sizes: NDArray[np.int64], num_canonical_nodes: int, seed: int,
-                     epoch: int) -> NDArray[np.int64]:
+def get_shuffle_py1s(shard_sizes: Any, num_canonical_nodes: int, seed: int,
+                     epoch: int) -> Any:
     """Get the shuffled global ordering of samples for an epoch.
 
     The assignment of shards to nodes is fixed across epochs, but each grouping of shards is
     processed concurrently in a different order by each node's workers each epoch.
 
     Args:
-        shard_sizes (NDArray[np.int64]): Number of samples contained in each shard, in order.
+        shard_sizes (Any): Number of samples contained in each shard, in order.
         num_canonical_nodes (int): Number of canonical nodes.
         seed (int): Base random seed, which is held constant over an entire training run.
         epoch (int): Current epoch, which is added to the seed to get a different deterministic
             shuffle each epoch.
 
     Returns:
-        NDArray[np.int64]: 1:1 mapping of sample ID to shuffled sample ID.
+        Any: 1:1 mapping of sample ID to shuffled sample ID.
     """
     # Create each shard's sample ID span (begin, end excl).
     spans = []

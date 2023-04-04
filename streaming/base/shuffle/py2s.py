@@ -6,7 +6,7 @@
 This algorithm is roughly half as fast as algorithm ``py1s``, but ever so slightly more random.
 """
 
-from typing import List
+from typing import Any, List
 
 import numpy as np
 # from numpy.typing import NDArray

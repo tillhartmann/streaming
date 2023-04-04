@@ -4,7 +4,7 @@
 """Helper methods to get the shard attributes."""
 
 from math import ceil
-from typing import Tuple
+from typing import Tuple, Any
 
 import numpy as np
 # from numpy.typing import NDArray

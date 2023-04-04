@@ -4,7 +4,7 @@
 """Apportion shards/samples to nodes/ranks/workers for elastically deterministic sample order."""
 
 import math
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 # from numpy.typing import NDArray

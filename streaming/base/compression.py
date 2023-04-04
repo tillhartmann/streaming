@@ -6,7 +6,7 @@
 import bz2
 import gzip
 from abc import ABC, abstractmethod
-from typing import Dict, Iterator, Optional, Set, Tuple, Type
+from typing import Dict, Iterator, Optional, Set, Tuple, Type, Any
 
 import brotli
 import snappy

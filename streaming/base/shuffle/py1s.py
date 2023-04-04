@@ -10,7 +10,7 @@ boundaries, which is non-random in this algorithm. In practice, we found this do
 convergence, while making us faster.
 """
 
-from typing import List, Tuple
+from typing import List, Tuple, Any
 
 import numpy as np
 # from numpy.typing import NDArray

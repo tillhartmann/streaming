@@ -8,7 +8,7 @@ import os
 from enum import IntEnum
 from threading import Thread
 from time import sleep, time
-from typing import Any, Dict, Iterator, Optional, Sequence, Tuple
+from typing import Any, Dict, Iterator, Optional, Sequence, Tuple, Any
 
 import numpy as np
 import torch
